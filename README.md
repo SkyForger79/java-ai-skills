@@ -17,6 +17,8 @@ RAG, LLM, and regulated AI-agent engineering.
 | `springboot-security` | `poc-gmmc-agent` `master` | Spring Security, validation, secrets, headers, rate limits, and dependency security. |
 | `rag-architect` | `poc-gmmc-agent` `master` | RAG architecture, retrieval quality, vector stores, chunking, and evals. |
 | `langfuse` | `poc-gmmc-agent` `master` | Langfuse trace, session, prompt, dataset, and eval debugging. |
+| `prompt-engineering-patterns` | local common skill | Production prompt design, structured outputs, few-shot patterns, prompt optimization, and template systems. |
+| `ai-prompt-engineering-safety-review` | local common skill | Safety, bias, privacy, prompt-injection, and effectiveness review for prompt changes. |
 | `acquire-codebase-knowledge` | local `poc-gmmc-agent` checkout | Codebase discovery and onboarding documentation workflow. |
 | `architecture-patterns` | local `poc-gmmc-agent` checkout | Pragmatic Java/Spring/Spring AI architecture boundary guidance. |
 

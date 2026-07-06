@@ -51,9 +51,53 @@ Start with a narrow context pass:
 5. Do not use removed historical `docs/superpowers/` specs or plans as current
    requirements.
 
-For Java code navigation, prefer targeted symbol/file reads over broad whole-file
-reads. Behavioral claims still require the relevant Gradle or integration test
-harness.
+For code navigation, use `code-index-mcp` as the MCP-backed code index. Serena
+is unavailable for this project; do not use Serena skills, Serena MCP tools, or
+`.serena/` project state as part of the Qwen workflow.
+
+## Code Index MCP For Code Analysis
+
+Use `code-index-mcp`, installed and launched through UV, for source-code
+discovery and symbol-oriented navigation.
+
+Recommended MCP configuration:
+
+```toml
+[mcp_servers.code-index]
+type = "stdio"
+command = "uvx"
+args = [
+  "code-index-mcp",
+  "--project-path",
+  "/Users/skyforger/Documents/poc-gmmc-agent"
+]
+```
+
+If the MCP server was launched without `--project-path`, first call
+`set_project_path` with:
+
+```text
+/Users/skyforger/Documents/poc-gmmc-agent
+```
+
+Use the code index this way:
+
+1. Call `get_settings_info` or equivalent status tooling to confirm the active
+   project path before relying on indexed results.
+2. Use `find_files` and `search_code_advanced` for targeted discovery instead
+   of broad whole-file reads.
+3. Run `build_deep_index` before class/method-level analysis, reference tracing,
+   architecture review, or broad refactors. The shallow index is enough for fast
+   file discovery; deep analysis needs the deep index.
+4. Use `get_file_summary` after the deep index when you need file structure,
+   classes, methods, imports, and complexity signals.
+5. After branch switches, large Java edits, generated-file changes, or stale
+   results, run `refresh_index`; rerun `build_deep_index` when symbol metadata
+   matters.
+
+Treat `code-index-mcp` output as navigation and refactoring evidence only.
+Behavioral claims still require source reads at the cited locations and the
+relevant Gradle or integration test harness.
 
 ## Branch And Worktree Discipline
 
@@ -106,6 +150,10 @@ Use a compact five-role team. Prefer the narrowest role that matches the task.
 Deep project architecture, SDD/spec decisions, trade-offs, and implementation
 briefs. May edit specs/docs, but not implementation code.
 
+Primary skills: `architecture-patterns`, `clean-architecture`,
+`acquire-codebase-knowledge`, `rag-architect`, `spring-boot-engineer`, and
+`springboot-security` as relevant.
+
 May edit:
 
 - `docs/specs/`
@@ -127,6 +175,11 @@ Owns the Architecture Brief and resolves Architecture Findings.
 
 Java/Spring Boot/LangGraph4j implementation after an Architecture Brief exists.
 
+Primary skills: `springboot-tdd`, `java-coding-standards`,
+`springboot-patterns`, `spring-boot-engineer`, `clean-architecture`,
+`jpa-patterns`, `springboot-security`, and `springboot-verification` as
+relevant.
+
 May edit only implementation files explicitly allowed by the brief, usually
 `src/main/java/`, `src/test/java/`, and focused resources under
 `src/main/resources/`.
@@ -140,6 +193,23 @@ changed contract, stop and raise an Architecture Finding for
 RAG, FinTools KB, fake RAG tests, Spring AI `ChatClient`, prompts, structured
 output, golden tests, malformed-output fallbacks, and no-answer behavior.
 
+Primary prompt-engineering skills for this role:
+
+- `rag-architect` for retrieval design, RAG evidence boundaries, no-answer
+  behavior, evaluation strategy, corpus/query design, and external KB contracts.
+- `prompt-engineering-patterns` for prompt template design, structured outputs,
+  few-shot examples, prompt optimization, and prompt-version reasoning.
+- `ai-prompt-engineering-safety-review` for prompt-injection, sensitive-data
+  leakage, bias, misinformation, and constraint-effectiveness review.
+- `langfuse` only for trace/session/prompt-version/dataset/eval diagnosis when
+  observability evidence is explicitly part of the task.
+- `springboot-tdd` and `java-coding-standards` when prompt/RAG changes include
+  Java implementation or tests.
+
+Translate generic examples from those skills to this project before
+implementation: Spring AI/GigaChat instead of Python/LangChain defaults, Java
+owned routing/policy decisions, and deterministic golden/fallback tests.
+
 Must not move route/tool/final-action decisions from Java into the model, create
 cross-product RAG calls, or treat RAG no-answer as pseudo-evidence. If prompt or
 RAG work requires a contract change, stop and raise an Architecture Finding.
@@ -150,6 +220,10 @@ Safety/compliance reviewer for PII, raw dialogue, HITL, Router/CRM handoff,
 tracking/audit, final actions, recommendations/suitability, and RAG evidence
 boundaries.
 
+Primary skills: `springboot-security`,
+`ai-prompt-engineering-safety-review`, `rag-architect`, `architecture-patterns`,
+and `langfuse` as relevant. Review-only.
+
 May edit only review notes, docs/checklists/PR notes, and the Regulated Flow
 Review section of the handoff artifact. Must not edit implementation code.
 
@@ -157,6 +231,10 @@ Review section of the handoff artifact. Must not edit implementation code.
 
 Verification and release-readiness reviewer. Checks diff scope, test evidence,
 PR notes, skipped checks, and residual risks.
+
+Primary skills: `springboot-verification`, `springboot-tdd`,
+`java-coding-standards`, `springboot-security`, `rag-architect`,
+`prompt-engineering-patterns`, and `langfuse` as relevant. Review-only.
 
 May edit only verification notes, docs/checklists/PR notes, and the Verification
 Evidence section of the handoff artifact. Must not edit implementation code.
@@ -202,6 +280,22 @@ Preserve these constraints unless a new approved spec changes them:
   authority for recommendations or suitability claims;
 - RAG no-answer is metadata, not evidence;
 - traces and tracking use sanitized state snapshots, not raw dialogue or PII.
+
+## Project Skills For Prompt/RAG Work
+
+Use project skills as guidance, not as a replacement for current specs and
+tests. For prompt/RAG tasks, the useful set is:
+
+- `rag-architect` - RAG corpus design, retrieval quality, no-answer behavior,
+  RAG evals, and external KB contract changes.
+- `prompt-engineering-patterns` - prompt templates, structured outputs,
+  examples, optimization, and deterministic prompt test design.
+- `ai-prompt-engineering-safety-review` - prompt safety review for injection,
+  sensitive-data leakage, bias, misinformation, and constraint bypasses.
+
+When these generic skills mention frameworks or models not used here, adapt the
+pattern to the existing Java/Spring AI/GigaChat implementation instead of adding
+new dependencies by default.
 
 ## Verification
 
