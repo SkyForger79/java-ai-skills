@@ -69,6 +69,36 @@ Prompt-engineering skills are part of the project skill set because the
 `rag-llm-prompt-specialist` role owns prompt templates, structured outputs,
 golden tests, malformed-output fallbacks, and prompt safety review.
 
+## Code Analysis Tooling
+
+For Qwen workflow guidance that depends on source-code navigation, use
+`code-index-mcp` launched through UV:
+
+```toml
+[mcp_servers.code-index]
+type = "stdio"
+command = "uvx"
+args = [
+  "code-index-mcp",
+  "--project-path",
+  "/Users/skyforger/Documents/poc-gmmc-agent"
+]
+```
+
+Serena is unavailable for `poc-gmmc-agent`. Do not author new Qwen instructions
+that require Serena skills, Serena MCP tools, or `.serena/` project state. If an
+imported skill still contains Serena-specific navigation references, keep Qwen
+assets explicit that `code-index-mcp`, `rg`, source reads, and executable tests
+are the supported path.
+
+Expected code-index usage in Qwen assets:
+
+- confirm or set the active project path before relying on indexed data;
+- use `find_files` and `search_code_advanced` for targeted discovery;
+- run `build_deep_index` before class, method, or reference analysis;
+- use `get_file_summary` for structure after deep indexing;
+- run `refresh_index` after branch switches, large edits, or stale results.
+
 ## Context Bootstrap
 
 Start each non-trivial task with:
@@ -204,6 +234,14 @@ For Qwen pack changes, verify the target install shape:
 test -f qwen/poc-gmmc-agent/QWEN.md
 test -f qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md
 find qwen/poc-gmmc-agent/agents -name '*.md' | sort
+```
+
+For documentation changes that describe code-index behavior, verify the Qwen
+pack still contains the required tool references:
+
+```bash
+rg "code-index-mcp|uvx|build_deep_index|search_code_advanced|refresh_index" \
+  README.md AGENTS.md qwen/poc-gmmc-agent
 ```
 
 When changes are copied into `/Users/skyforger/Documents/poc-gmmc-agent`, run
