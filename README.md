@@ -1,6 +1,7 @@
-# Java AI Skills
+# Java AI Skills And Qwen Agents
 
-Reusable Codex skills for Java, Spring Boot, RAG, and AI-agent engineering.
+Reusable Codex skills and Qwen Code CLI subagent assets for Java, Spring Boot,
+RAG, LLM, and regulated AI-agent engineering.
 
 ## Skills
 
@@ -38,3 +39,36 @@ python3 ~/.codex/skills/.system/skill-installer/scripts/install-skill-from-githu
   --path skills/springboot-verification \
   --path skills/java-coding-standards
 ```
+
+## Qwen Code CLI Assets
+
+This repository also includes a project-specific Qwen Code CLI subagent pack for
+`poc-gmmc-agent`:
+
+```text
+qwen/poc-gmmc-agent/
+├── QWEN.md
+├── agents/
+│   ├── principal-architect.md
+│   ├── spring-runtime-implementer.md
+│   ├── rag-llm-prompt-specialist.md
+│   ├── regulated-flow-reviewer.md
+│   └── verification-release-owner.md
+└── subagent-handoff/
+    └── TEMPLATE.md
+```
+
+Use the pack by copying files into a `poc-gmmc-agent` checkout:
+
+```bash
+cp qwen/poc-gmmc-agent/QWEN.md /path/to/poc-gmmc-agent/QWEN.md
+mkdir -p /path/to/poc-gmmc-agent/.qwen/agents
+cp qwen/poc-gmmc-agent/agents/*.md /path/to/poc-gmmc-agent/.qwen/agents/
+mkdir -p /path/to/poc-gmmc-agent/docs/planning/subagent-handoff
+cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
+  /path/to/poc-gmmc-agent/docs/planning/subagent-handoff/TEMPLATE.md
+```
+
+Qwen Code discovers project-level subagents from `.qwen/agents/`. The included
+`QWEN.md` defines the shared project operating guide, and the handoff template is
+used for durable per-task pipeline records.
