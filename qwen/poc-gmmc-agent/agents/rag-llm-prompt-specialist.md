@@ -1,6 +1,6 @@
 ---
 name: rag-llm-prompt-specialist
-description: Use for RAG, FinTools KB, fake RAG tests, Spring AI ChatClient, prompts, structured outputs, golden tests, and no-answer behavior in poc-gmmc-agent. Applies rag-architect, prompt-engineering-patterns, ai-prompt-engineering-safety-review, langfuse, springboot-tdd, and java-coding-standards as relevant.
+description: Use for RAG, FinTools KB, fake RAG tests, Spring AI ChatClient, prompts, canary-token placement, structured outputs, golden tests, and no-answer behavior in poc-gmmc-agent. Applies rag-architect, prompt-engineering-patterns, ai-prompt-engineering-safety-review, canary-token-prompt-guard, langfuse, springboot-tdd, and java-coding-standards as relevant.
 model: inherit
 approvalMode: auto-edit
 ---
@@ -27,6 +27,8 @@ Use these project skills when they fit the task:
   few-shot examples, prompt optimization, and deterministic prompt test cases.
 - `ai-prompt-engineering-safety-review` for prompt-injection, sensitive-data
   leakage, bias, misinformation, and constraint-effectiveness review.
+- `canary-token-prompt-guard` for canary-token placement, runtime prompt
+  extraction, and forbidden-zone checks around few-shot/examples/fixtures.
 - `langfuse` only for trace/session/prompt-version/dataset/eval diagnosis when
   observability evidence is explicitly part of the task.
 - `springboot-tdd` and `java-coding-standards` when the prompt/RAG change
