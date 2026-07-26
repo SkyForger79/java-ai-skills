@@ -19,6 +19,7 @@ Use this repository to maintain:
 - Codex-compatible skills under `skills/`;
 - the Qwen Code CLI operating guide under `qwen/poc-gmmc-agent/QWEN.md`;
 - project-level Qwen subagents under `qwen/poc-gmmc-agent/agents/`;
+- project-level Qwen skills under `qwen/poc-gmmc-agent/skills/`;
 - the durable Qwen handoff template under
   `qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md`.
 
@@ -100,6 +101,10 @@ qwen/poc-gmmc-agent/
 │   ├── rag-llm-prompt-specialist.md
 │   ├── regulated-flow-reviewer.md
 │   └── verification-release-owner.md
+├── skills/
+│   └── canary-token-prompt-guard/
+│       ├── SKILL.md
+│       └── scripts/canary_prompt.py
 └── subagent-handoff/
     └── TEMPLATE.md
 ```
@@ -110,14 +115,22 @@ Use the pack by copying files into a `poc-gmmc-agent` checkout:
 cp qwen/poc-gmmc-agent/QWEN.md /path/to/poc-gmmc-agent/QWEN.md
 mkdir -p /path/to/poc-gmmc-agent/.qwen/agents
 cp qwen/poc-gmmc-agent/agents/*.md /path/to/poc-gmmc-agent/.qwen/agents/
+mkdir -p /path/to/poc-gmmc-agent/.qwen/skills
+cp -R qwen/poc-gmmc-agent/skills/canary-token-prompt-guard \
+  /path/to/poc-gmmc-agent/.qwen/skills/
 mkdir -p /path/to/poc-gmmc-agent/docs/planning/subagent-handoff
 cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
   /path/to/poc-gmmc-agent/docs/planning/subagent-handoff/TEMPLATE.md
 ```
 
 Qwen Code discovers project-level subagents from `.qwen/agents/`. The included
-`QWEN.md` defines the shared project operating guide, and the handoff template is
+`QWEN.md` defines the shared project operating guide, `.qwen/skills/` contains
+project skills such as `canary-token-prompt-guard`, and the handoff template is
 used for durable per-task pipeline records.
+
+The canary skill implements prompt-security review and deterministic placement
+of wrapped canary tokens for `poc-gmmc-agent` prompt payloads, including the
+GigaChat Ultra answer prompt card introduced by draft PR #62.
 
 ## Code Analysis MCP
 
@@ -155,10 +168,18 @@ find qwen/poc-gmmc-agent -type f | sort
 git diff --check
 ```
 
-For changed skills, validate each updated skill directory with the Codex skill
-validator:
+For changed Codex-compatible skills under `skills/`, validate each updated skill
+directory with the Codex skill validator:
 
 ```bash
 python3 ~/.codex/skills/.system/skill-creator/scripts/quick_validate.py \
   skills/<skill-name>
+```
+
+For Qwen project skills under `qwen/poc-gmmc-agent/skills/`, validate their
+`SKILL.md` frontmatter and run any helper self-tests, for example:
+
+```bash
+python3 qwen/poc-gmmc-agent/skills/canary-token-prompt-guard/scripts/canary_prompt.py \
+  self-test
 ```

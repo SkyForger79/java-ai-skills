@@ -201,6 +201,8 @@ Primary prompt-engineering skills for this role:
   few-shot examples, prompt optimization, and prompt-version reasoning.
 - `ai-prompt-engineering-safety-review` for prompt-injection, sensitive-data
   leakage, bias, misinformation, and constraint-effectiveness review.
+- `canary-token-prompt-guard` for canary-token placement, runtime prompt
+  extraction, and forbidden-zone checks around few-shot/examples/fixtures.
 - `langfuse` only for trace/session/prompt-version/dataset/eval diagnosis when
   observability evidence is explicitly part of the task.
 - `springboot-tdd` and `java-coding-standards` when prompt/RAG changes include
@@ -222,7 +224,7 @@ boundaries.
 
 Primary skills: `springboot-security`,
 `ai-prompt-engineering-safety-review`, `rag-architect`, `architecture-patterns`,
-and `langfuse` as relevant. Review-only.
+`canary-token-prompt-guard`, and `langfuse` as relevant. Review-only.
 
 May edit only review notes, docs/checklists/PR notes, and the Regulated Flow
 Review section of the handoff artifact. Must not edit implementation code.
@@ -292,6 +294,9 @@ tests. For prompt/RAG tasks, the useful set is:
   examples, optimization, and deterministic prompt test design.
 - `ai-prompt-engineering-safety-review` - prompt safety review for injection,
   sensitive-data leakage, bias, misinformation, and constraint bypasses.
+- `canary-token-prompt-guard` - canary-token insertion rules, runtime prompt
+  extraction, validation, and forbidden-zone review for few-shot examples,
+  fixtures, schemas, and eval matrices.
 
 When these generic skills mention frameworks or models not used here, adapt the
 pattern to the existing Java/Spring AI/GigaChat implementation instead of adding

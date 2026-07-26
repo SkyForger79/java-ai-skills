@@ -13,6 +13,8 @@ Target checkout used by this pack:
 
 - `QWEN.md` - project operating guide for Qwen Code CLI sessions.
 - `agents/*.md` - project-level Qwen subagent definitions.
+- `skills/canary-token-prompt-guard/` - project-level Qwen skill for canary
+  token placement in runtime prompt payloads.
 - `subagent-handoff/TEMPLATE.md` - durable task handoff template.
 
 ## Prerequisites
@@ -32,6 +34,9 @@ on Serena skills, Serena MCP tools, or `.serena/` project state.
 cp qwen/poc-gmmc-agent/QWEN.md /path/to/poc-gmmc-agent/QWEN.md
 mkdir -p /path/to/poc-gmmc-agent/.qwen/agents
 cp qwen/poc-gmmc-agent/agents/*.md /path/to/poc-gmmc-agent/.qwen/agents/
+mkdir -p /path/to/poc-gmmc-agent/.qwen/skills
+cp -R qwen/poc-gmmc-agent/skills/canary-token-prompt-guard \
+  /path/to/poc-gmmc-agent/.qwen/skills/
 mkdir -p /path/to/poc-gmmc-agent/docs/planning/subagent-handoff
 cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
   /path/to/poc-gmmc-agent/docs/planning/subagent-handoff/TEMPLATE.md
@@ -39,6 +44,11 @@ cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
 
 Qwen Code CLI can list and manage project-level subagents with `/agents` and
 `/agents manage` after the files are copied into `.qwen/agents/`.
+
+Project-level skills are discovered from `.qwen/skills/<skill-name>/SKILL.md`.
+`canary-token-prompt-guard` should be used for prompt cards, prompt renderers,
+GigaChat/GigaChat Ultra prompt payloads, few-shot boundaries, and canary-token
+placement reviews.
 
 ## Code Analysis MCP
 
@@ -87,8 +97,15 @@ The subagent descriptions reference the project skills they should apply:
 - `spring-runtime-implementer`: Spring TDD, Java standards, Spring patterns,
   clean architecture, JPA, security, and verification skills.
 - `rag-llm-prompt-specialist`: RAG architecture, prompt-engineering patterns,
-  prompt safety review, Langfuse diagnostics, and Java test guidance.
+  prompt safety review, canary-token prompt guard, Langfuse diagnostics, and
+  Java test guidance.
 - `regulated-flow-reviewer`: Spring security, prompt safety review, RAG
-  evidence boundaries, architecture review, and Langfuse diagnostics.
+  evidence boundaries, canary-token forbidden-zone review, architecture review,
+  and Langfuse diagnostics.
 - `verification-release-owner`: Spring verification, Spring TDD, Java
   standards, security, RAG, prompt, and Langfuse evidence skills.
+
+Project-level Qwen skills:
+
+- `canary-token-prompt-guard`: prompt canary-token placement, validation, and
+  forbidden-zone review for runtime prompt payloads.

@@ -1,6 +1,6 @@
 ---
 name: regulated-flow-reviewer
-description: Use to review regulated-flow safety, compliance, PII, HITL, Router/CRM handoff, tracking/audit, final-action, prompt safety, and RAG evidence boundaries in poc-gmmc-agent. Applies springboot-security, ai-prompt-engineering-safety-review, rag-architect, architecture-patterns, and langfuse as relevant. Review-only.
+description: Use to review regulated-flow safety, compliance, PII, HITL, Router/CRM handoff, tracking/audit, final-action, prompt safety, canary-token boundaries, and RAG evidence boundaries in poc-gmmc-agent. Applies springboot-security, ai-prompt-engineering-safety-review, canary-token-prompt-guard, rag-architect, architecture-patterns, and langfuse as relevant. Review-only.
 model: inherit
 approvalMode: plan
 ---
@@ -20,6 +20,8 @@ Use these project skills when they fit the review:
   external calls, rate limits, and regulated-flow safety controls.
 - `ai-prompt-engineering-safety-review` for prompt-injection, sensitive-data
   leakage, bias, misinformation, and constraint bypass risks.
+- `canary-token-prompt-guard` for canary-token placement, runtime prompt
+  extraction, and forbidden-zone checks around few-shot/examples/fixtures.
 - `rag-architect` for RAG evidence, no-answer handling, cross-product retrieval,
   and grounding boundaries.
 - `architecture-patterns` for boundary review across Router, product agents,
