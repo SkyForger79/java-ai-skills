@@ -41,7 +41,12 @@ accepted spec or update/create a spec delta before implementation continues.
 
 ## Bootstrap For Non-Trivial Tasks
 
-Start with a narrow context pass:
+For focused read-only questions handled by `answer-codebase-questions`, run
+`git status --short --branch` and follow that skill's Fast Investigation. Read
+the docs map, `sdd-flow.md`, and current specs only when the question depends on
+them or changes are requested.
+
+For implementation, review, or broad architecture tasks, start with:
 
 1. Run `git status --short --branch`.
 2. Read `README.md`, then use `docs/planning/context-index.md` and
@@ -60,17 +65,28 @@ is unavailable for this project; do not use Serena skills, Serena MCP tools, or
 Use `code-index-mcp`, installed and launched through UV, for source-code
 discovery and symbol-oriented navigation.
 
-Recommended MCP configuration:
+Merge this project-scoped entry into `.qwen/settings.json`:
 
-```toml
-[mcp_servers.code-index]
-type = "stdio"
-command = "uvx"
-args = [
-  "code-index-mcp",
-  "--project-path",
-  "/Users/skyforger/Documents/poc-gmmc-agent"
-]
+```json
+{
+  "mcpServers": {
+    "code-index": {
+      "command": "uvx",
+      "args": [
+        "code-index-mcp",
+        "--project-path",
+        "/Users/skyforger/Documents/poc-gmmc-agent"
+      ]
+    }
+  }
+}
+```
+
+Alternatively, from the project root run:
+
+```bash
+qwen mcp add --scope project --transport stdio code-index \
+  uvx code-index-mcp --project-path /Users/skyforger/Documents/poc-gmmc-agent
 ```
 
 If the MCP server was launched without `--project-path`, first call
@@ -86,9 +102,10 @@ Use the code index this way:
    project path before relying on indexed results.
 2. Use `find_files` and `search_code_advanced` for targeted discovery instead
    of broad whole-file reads.
-3. Run `build_deep_index` before class/method-level analysis, reference tracing,
-   architecture review, or broad refactors. The shallow index is enough for fast
-   file discovery; deep analysis needs the deep index.
+3. Run `build_deep_index` before class/method-level analysis or reference
+   tracing. For architecture review or broad refactors, run it when the analysis
+   depends on symbol structure or references. The shallow index is enough for
+   fast file discovery.
 4. Use `get_file_summary` after the deep index when you need file structure,
    classes, methods, imports, and complexity signals.
 5. After branch switches, large Java edits, generated-file changes, or stale
@@ -98,6 +115,39 @@ Use the code index this way:
 Treat `code-index-mcp` output as navigation and refactoring evidence only.
 Behavioral claims still require source reads at the cited locations and the
 relevant Gradle or integration test harness.
+
+## Focused Codebase Questions
+
+Use the project skill `answer-codebase-questions` when a developer, analyst,
+DevOps engineer, or architect asks how current code, runtime logic,
+configuration, integrations, tests, or architecture work. This includes
+requests to locate an implementation, trace a request or state transition,
+explain a project decision, or compare code with the current specs.
+
+The skill is question-driven: investigate the smallest relevant code path and
+use `code-index-mcp`, `rg`, targeted source reads, and nearest tests as evidence.
+For logic and architecture questions, adaptively check the relevant current
+section under `docs/specs/`. Report code/spec disagreement as a finding instead
+of hiding it.
+
+If the disagreement requires an architecture decision, return a compact
+`Architecture Finding` containing the conflict, evidence, decision needed, and
+owner `principal-architect`, then stop. Do not dispatch the role or edit
+specs/docs unless the user asks to continue.
+
+By default, answer in the conversation with a direct conclusion, the relevant
+flow, concrete `path:line` evidence, and any gaps or uncertainty. Keep facts,
+evidence-backed inferences, and unknowns distinct. Do not propose changes unless
+the user asks. Do not edit implementation code while using this skill.
+
+When the user explicitly asks for a durable result, save it as:
+
+```text
+docs/planning/investigations/<YYYY-MM-DD-topic>.md
+```
+
+Use `acquire-codebase-knowledge` instead when the request is full codebase
+mapping, onboarding, or generation of the seven `docs/codebase/` documents.
 
 ## Branch And Worktree Discipline
 

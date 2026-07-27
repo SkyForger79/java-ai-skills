@@ -102,6 +102,8 @@ qwen/poc-gmmc-agent/
 │   ├── regulated-flow-reviewer.md
 │   └── verification-release-owner.md
 ├── skills/
+│   ├── answer-codebase-questions/
+│   │   └── SKILL.md
 │   └── canary-token-prompt-guard/
 │       ├── SKILL.md
 │       └── scripts/canary_prompt.py
@@ -116,8 +118,7 @@ cp qwen/poc-gmmc-agent/QWEN.md /path/to/poc-gmmc-agent/QWEN.md
 mkdir -p /path/to/poc-gmmc-agent/.qwen/agents
 cp qwen/poc-gmmc-agent/agents/*.md /path/to/poc-gmmc-agent/.qwen/agents/
 mkdir -p /path/to/poc-gmmc-agent/.qwen/skills
-cp -R qwen/poc-gmmc-agent/skills/canary-token-prompt-guard \
-  /path/to/poc-gmmc-agent/.qwen/skills/
+cp -R qwen/poc-gmmc-agent/skills/. /path/to/poc-gmmc-agent/.qwen/skills/
 mkdir -p /path/to/poc-gmmc-agent/docs/planning/subagent-handoff
 cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
   /path/to/poc-gmmc-agent/docs/planning/subagent-handoff/TEMPLATE.md
@@ -125,8 +126,14 @@ cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
 
 Qwen Code discovers project-level subagents from `.qwen/agents/`. The included
 `QWEN.md` defines the shared project operating guide, `.qwen/skills/` contains
-project skills such as `canary-token-prompt-guard`, and the handoff template is
-used for durable per-task pipeline records.
+project skills, and the handoff template is used for durable per-task pipeline
+records.
+
+`answer-codebase-questions` provides focused, evidence-backed answers about the
+current project code, logic, configuration, tests, integrations, and
+architecture. It can save an investigation under
+`docs/planning/investigations/` when explicitly requested, without editing
+implementation code.
 
 The canary skill implements prompt-security review and deterministic placement
 of wrapped canary tokens for `poc-gmmc-agent` prompt payloads, including the
@@ -138,17 +145,21 @@ Qwen agents for `poc-gmmc-agent` should use `code-index-mcp`, launched through
 UV, for code discovery and symbol navigation. Serena is unavailable for this
 project and must not be used in Qwen workflow instructions.
 
-Recommended Qwen/Codex MCP configuration:
+Recommended project-scoped Qwen MCP configuration in `.qwen/settings.json`:
 
-```toml
-[mcp_servers.code-index]
-type = "stdio"
-command = "uvx"
-args = [
-  "code-index-mcp",
-  "--project-path",
-  "/Users/skyforger/Documents/poc-gmmc-agent"
-]
+```json
+{
+  "mcpServers": {
+    "code-index": {
+      "command": "uvx",
+      "args": [
+        "code-index-mcp",
+        "--project-path",
+        "/Users/skyforger/Documents/poc-gmmc-agent"
+      ]
+    }
+  }
+}
 ```
 
 Use `find_files` and `search_code_advanced` for targeted discovery,

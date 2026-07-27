@@ -71,18 +71,22 @@ golden tests, malformed-output fallbacks, and prompt safety review.
 
 ## Code Analysis Tooling
 
-For Qwen workflow guidance that depends on source-code navigation, use
-`code-index-mcp` launched through UV:
+For Qwen workflow guidance that depends on source-code navigation, configure
+`code-index-mcp` in the target project's `.qwen/settings.json`:
 
-```toml
-[mcp_servers.code-index]
-type = "stdio"
-command = "uvx"
-args = [
-  "code-index-mcp",
-  "--project-path",
-  "/Users/skyforger/Documents/poc-gmmc-agent"
-]
+```json
+{
+  "mcpServers": {
+    "code-index": {
+      "command": "uvx",
+      "args": [
+        "code-index-mcp",
+        "--project-path",
+        "/Users/skyforger/Documents/poc-gmmc-agent"
+      ]
+    }
+  }
+}
 ```
 
 Serena is unavailable for `poc-gmmc-agent`. Do not author new Qwen instructions
@@ -197,6 +201,8 @@ TARGET=/Users/skyforger/Documents/poc-gmmc-agent
 cp qwen/poc-gmmc-agent/QWEN.md "$TARGET/QWEN.md"
 mkdir -p "$TARGET/.qwen/agents"
 cp qwen/poc-gmmc-agent/agents/*.md "$TARGET/.qwen/agents/"
+mkdir -p "$TARGET/.qwen/skills"
+cp -R qwen/poc-gmmc-agent/skills/. "$TARGET/.qwen/skills/"
 mkdir -p "$TARGET/docs/planning/subagent-handoff"
 cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
   "$TARGET/docs/planning/subagent-handoff/TEMPLATE.md"

@@ -13,6 +13,8 @@ Target checkout used by this pack:
 
 - `QWEN.md` - project operating guide for Qwen Code CLI sessions.
 - `agents/*.md` - project-level Qwen subagent definitions.
+- `skills/answer-codebase-questions/` - focused, evidence-backed answers about
+  current project code, logic, configuration, tests, and architecture.
 - `skills/canary-token-prompt-guard/` - project-level Qwen skill for canary
   token placement in runtime prompt payloads.
 - `subagent-handoff/TEMPLATE.md` - durable task handoff template.
@@ -35,8 +37,7 @@ cp qwen/poc-gmmc-agent/QWEN.md /path/to/poc-gmmc-agent/QWEN.md
 mkdir -p /path/to/poc-gmmc-agent/.qwen/agents
 cp qwen/poc-gmmc-agent/agents/*.md /path/to/poc-gmmc-agent/.qwen/agents/
 mkdir -p /path/to/poc-gmmc-agent/.qwen/skills
-cp -R qwen/poc-gmmc-agent/skills/canary-token-prompt-guard \
-  /path/to/poc-gmmc-agent/.qwen/skills/
+cp -R qwen/poc-gmmc-agent/skills/. /path/to/poc-gmmc-agent/.qwen/skills/
 mkdir -p /path/to/poc-gmmc-agent/docs/planning/subagent-handoff
 cp qwen/poc-gmmc-agent/subagent-handoff/TEMPLATE.md \
   /path/to/poc-gmmc-agent/docs/planning/subagent-handoff/TEMPLATE.md
@@ -46,24 +47,36 @@ Qwen Code CLI can list and manage project-level subagents with `/agents` and
 `/agents manage` after the files are copied into `.qwen/agents/`.
 
 Project-level skills are discovered from `.qwen/skills/<skill-name>/SKILL.md`.
+`answer-codebase-questions` should be used for focused questions about current
+code, behavior, configuration, tests, integrations, or architecture. It answers
+from concrete source evidence and may save findings under
+`docs/planning/investigations/` when explicitly requested.
 `canary-token-prompt-guard` should be used for prompt cards, prompt renderers,
 GigaChat/GigaChat Ultra prompt payloads, few-shot boundaries, and canary-token
 placement reviews.
 
 ## Code Analysis MCP
 
-Recommended MCP server configuration:
+Merge this project-scoped entry into `.qwen/settings.json`:
 
-```toml
-[mcp_servers.code-index]
-type = "stdio"
-command = "uvx"
-args = [
-  "code-index-mcp",
-  "--project-path",
-  "/Users/skyforger/Documents/poc-gmmc-agent"
-]
+```json
+{
+  "mcpServers": {
+    "code-index": {
+      "command": "uvx",
+      "args": [
+        "code-index-mcp",
+        "--project-path",
+        "/Users/skyforger/Documents/poc-gmmc-agent"
+      ]
+    }
+  }
+}
 ```
+
+Alternatively, run `qwen mcp add --scope project --transport stdio code-index
+uvx code-index-mcp --project-path /Users/skyforger/Documents/poc-gmmc-agent`
+from the target project root.
 
 If the MCP server starts without a project path, call `set_project_path` with the
 target checkout path before using indexed results.
@@ -107,5 +120,7 @@ The subagent descriptions reference the project skills they should apply:
 
 Project-level Qwen skills:
 
+- `answer-codebase-questions`: focused code, behavior, configuration, test, and
+  architecture investigation with source evidence and optional durable notes.
 - `canary-token-prompt-guard`: prompt canary-token placement, validation, and
   forbidden-zone review for runtime prompt payloads.
